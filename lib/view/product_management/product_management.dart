@@ -1,11 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:new_admin/model/page_model.dart';
+import 'package:get/get.dart';
+import 'package:new_admin/controller/firebase_controlle/firebase_image_controller.dart';
 import 'package:new_admin/utility/colors.dart';
 import 'package:new_admin/view/product_management/screens/product_list.dart';
 import 'package:new_admin/view/product_management/screens/product_variants.dart';
-
 import '../../common_widget/menu_widgets/side_menus.dart';
 import 'screens/add_products.dart';
 import 'screens/category.dart';
@@ -24,6 +23,7 @@ class _ProductManagementState extends State<ProductManagement> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    Get.put(FirebaseImageController());
   }
 
   int _currentWidgets = 0;
@@ -91,15 +91,16 @@ class _ProductManagementState extends State<ProductManagement> {
 
 class ListOfProductManagementMenu{
   static final List = [
-    {
-      "name" : "Product Variant",
-      "page" : ProductVariant()
-    } ,
+
+
     {
       "name" : "All Category",
       "page" : Category()
     } ,
-
+    {
+      "name" : "Product Variant",
+      "page" : ProductVariant()
+    } ,
     {
       "name" : "Add New Product",
       "page" : AppProducts()

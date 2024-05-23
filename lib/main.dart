@@ -1,15 +1,17 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_admin_scaffold/admin_scaffold.dart';
-import 'package:new_admin/view/dashboards/screens/dashboards.dart';
+import 'package:new_admin/view/auth/auth.dart';
 import 'package:new_admin/view/main_page/main_page.dart';
 
-import 'package:new_admin/view/product_management/screens/add_products.dart';
+
+import 'firebase_options.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 
@@ -24,7 +26,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Admin Panel',
-      home: MainPage(),
+      home: FirebaseAuth.instance.currentUser != null ? MainPage() : Authentication(),
     );
   }
 

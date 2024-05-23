@@ -4,12 +4,13 @@ import '../../utility/colors.dart';
 
 
 class AppTable extends StatelessWidget {
-   AppTable({super.key, required this.headersChildren, required this.child, required this.onSearch, required this.searchController});
+   AppTable({super.key, required this.headersChildren, required this.row, required this.onSearch, required this.searchController, required this.title});
   final List<Widget> headersChildren;
   final Color headerBg = Colors.green.shade100;
-  final Widget child;
+  final Widget row;
   final VoidCallback onSearch;
   final TextEditingController searchController;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class AppTable extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text("Scripting Data",
+             Text("${title}",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
@@ -78,21 +79,21 @@ class AppTable extends StatelessWidget {
           ],
         ),
         SizedBox(height: 10,),
-        Container(
-          width: double.infinity,
-          //padding: EdgeInsets.all(1),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            // borderRadius: BorderRadius.circular(10)
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-            ],
-          ),
-        ),
+        // Container(
+        //   width: double.infinity,
+        //   //padding: EdgeInsets.all(1),
+        //   decoration: BoxDecoration(
+        //     color: Colors.white,
+        //     // borderRadius: BorderRadius.circular(10)
+        //   ),
+        //   child: Column(
+        //     mainAxisAlignment: MainAxisAlignment.start,
+        //     crossAxisAlignment: CrossAxisAlignment.start,
+        //     children: [
+        //
+        //     ],
+        //   ),
+        // ),
         SizedBox(height: 15,),
         Container(
           width: double.infinity,
@@ -108,7 +109,7 @@ class AppTable extends StatelessWidget {
         ),
 
         //row coming here
-        child
+        row
 
       ],
     );

@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_admin_scaffold/admin_scaffold.dart';
-import 'package:new_admin/database/db_connection.dart';
-import 'package:new_admin/utility/assets.dart';
 import 'package:new_admin/view/dashboards/screens/dashboards.dart';
-import 'package:new_admin/view/product_management/screens/add_products.dart';
-
 import '../product_management/product_management.dart';
 
 class MainPage extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class TableHeader extends StatelessWidget {
-  const TableHeader({super.key, required this.width, required this.text});
+class AppTableHeader extends StatelessWidget {
+  const AppTableHeader({super.key, required this.width, required this.text});
   final double width;
   final String text;
 
@@ -20,10 +20,10 @@ class TableHeader extends StatelessWidget {
 }
 
 
-class TableRow extends StatelessWidget {
-  const TableRow({super.key, required this.onTap, required this.width, required this.text});
-  final VoidCallback onTap;
-  final bool isClick = false;
+class AppTableRow extends StatelessWidget {
+  const AppTableRow({super.key, this.onTap, required this.width, required this.text, this.isClick = false});
+  final VoidCallback? onTap;
+  final bool isClick;
   final double width;
   final String text;
 

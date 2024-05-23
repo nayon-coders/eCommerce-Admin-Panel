@@ -22,6 +22,10 @@ class AppInputField extends StatelessWidget {
       keyboardType: keyboardType,
       keyboardAppearance: Brightness.light,
       controller: controller,
+      style:  TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w400,
+      ),
       decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
@@ -38,7 +42,11 @@ class AppInputField extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide(width: 1, color: Colors.grey.shade200)
           ),
-          hintText: "${hintText}"
+          hintText: "${hintText}",
+          hintStyle: TextStyle(
+          fontSize: 13,
+        fontWeight: FontWeight.w400,
+      )
       ),
 
       validator: validator
