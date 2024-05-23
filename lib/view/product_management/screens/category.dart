@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:new_admin/common_widget/app_button/app_button.dart';
 import 'package:new_admin/common_widget/app_input/app_input.dart';
 import 'package:new_admin/common_widget/images/app_network_image.dart';
 import 'package:new_admin/controller/firebase_controlle/firebase_image_controller.dart';
@@ -36,6 +37,11 @@ class _CategoryState extends State<Category> {
       selectedFile = newData;
     });
   }
+
+
+  bool _isEdit = false;
+  bool _isLoading = false;
+  var selectedId, selectedDocId, selectedImage;
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +106,7 @@ class _CategoryState extends State<Category> {
                                       border: Border.all(width: 1, color: Colors.grey),
                                     ),
                                     child: Center(
-                                      child: selectedFile != null ? Image.memory(selectedFile!) : Icon(Icons.upload_outlined, color: Colors.grey, size: 80,),
+                                      child: selectedFile != null ? Image.memory(selectedFile!) :  selectedImage != null ? Image.network(selectedImage!) : Icon(Icons.upload_outlined, color: Colors.grey, size: 80,),
                                     ),
                                   ),
                                 ),
@@ -112,36 +118,43 @@ class _CategoryState extends State<Category> {
                                   ),
                                 ),
                                 SizedBox(height: 20,),
-                                InkWell(
-                                  onTap: ()async{
-                                    try{
-                                      appLoading(context);
+                                AppButton(onClick: ()async{
+                                  try{
+                                    if(_isEdit){
+                                      setState(() => _isLoading = true);
+                                      //edit data
+                                      if(selectedFile != null){
+                                        selectedImage = await FirebaseImageController.uploadImageToFirebaseStorage(selectedFile!, "category_img");
+                                      }
+                                      var categoryModel = CategoryModel(id: selectedId, categoryName: _categoryName.text, categoryImage: selectedImage, createAt: todayDate.toString() );
+                                      //store data
+                                      await CategoryController.editCategory(selectedDocId, categoryModel);
+
+                                      _categoryName.clear();
+                                      selectedFile = null;
+                                      setState(() {
+                                        _isEdit = false;
+                                        _isLoading = false;
+                                      });
+
+                                    }else{
+                                      setState(() => _isLoading = true);
                                       //store data...
                                       int id = Random().nextInt(100000);
                                       var image = await FirebaseImageController.uploadImageToFirebaseStorage(selectedFile!, "category_img");
                                       var categoryModel = CategoryModel(id: id.toString(), categoryName: _categoryName.text, categoryImage: image.toString(), createAt: todayDate.toString() );
                                       //store data
-                                       await CategoryController.addCategory(categoryModel.toJson(), context);
+                                      await CategoryController.addCategory(categoryModel.toJson(), context);
 
-                                       _categoryName.clear();
-                                       selectedFile = null;
-                                       setState(() {
-
-                                       });
-                                    }catch(e){
-          
+                                      _categoryName.clear();
+                                      selectedFile = null;
+                                      setState(() => _isLoading = false);
                                     }
-                                  },
-                                  child: Container(
-                                    width: 100,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.mainColor,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Center(child: Text("Add" ),),
-                                  ),
-                                )
+
+                                  }catch(e){
+
+                                  }
+                                }, text: _isEdit ? "Edit" : "Add", isLoading: _isLoading,),
           
                               ],
                             ),
@@ -220,8 +233,14 @@ class _CategoryState extends State<Category> {
                                               width: 100,
                                               child: Row(
                                                 children: [
-                                                  IconButton(onPressed: ()async{
-                                                    await CategoryController.deleteCategory(snapshot.data!.docs![index].id);
+                                                  IconButton(onPressed: (){
+                                                    setState(() {
+                                                      selectedId = data.id;
+                                                      selectedDocId = snapshot.data!.docs![index]!.id;
+                                                      selectedImage = data.categoryImage;
+                                                      _categoryName.text = data.categoryName!;
+                                                      _isEdit = true;
+                                                    });
                                                   }, icon: Icon(Icons.edit, color: Colors.amber,)),
                                                   IconButton(onPressed: ()async{
                                                     await CategoryController.deleteCategory(snapshot.data!.docs![index].id);

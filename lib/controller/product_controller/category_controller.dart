@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_dropdown_alert/alert_controller.dart';
 import 'package:flutter_dropdown_alert/model/data_alert.dart';
 import 'package:get/get.dart';
+import 'package:new_admin/model/product/category_model.dart';
 import 'package:new_admin/utility/app_const.dart';
 import 'package:snackbar/snackbar.dart';
 
@@ -31,8 +32,8 @@ class CategoryController{
 
 
   //edit category
-  static Future editCategory(id, categoryModel)async{
-    return _firebaseFirestore.collection(categoryCollection).doc(id).update(categoryModel).then((value){
+  static Future editCategory(String id, CategoryModel categoryModel)async{
+    return _firebaseFirestore.collection(categoryCollection).doc(id).update(categoryModel.toJson()).then((value){
       AlertController.show("Updated...", "Category is updated", TypeAlert.success);
     });
   }

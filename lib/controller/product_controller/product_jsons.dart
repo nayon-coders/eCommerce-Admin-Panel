@@ -21,5 +21,15 @@ class ProductJson{
   };
 
 
+  //variant
+  static final variantsJson = {
+    "id" : "1",
+    "name": "name",
+    "variants" : [],
+    "create_at" : "asdfsd"
+  };
+
+
+
 
 }
