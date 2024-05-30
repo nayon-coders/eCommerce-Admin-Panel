@@ -21,7 +21,8 @@ class AppButton extends StatelessWidget {
       onTap: onClick,
       child: Container(
         width: width,
-        padding: EdgeInsets.only(left: 25, right: 25, top: 9, bottom: 9),
+        height: 38,
+        padding: EdgeInsets.only(left: 25, right: 25, top: 8, bottom: 8),
         decoration: BoxDecoration(
           color: bgColor,
         ),
@@ -35,7 +36,7 @@ class AppButton extends StatelessWidget {
               : Text(
                   "${text}",
                   style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.w600),
+                      color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13),
                 ),
         ),
       ),

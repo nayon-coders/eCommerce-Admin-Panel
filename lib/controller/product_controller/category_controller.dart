@@ -21,7 +21,6 @@ class CategoryController{
   static Future addCategory(Map<String, dynamic> categoryModel, context)async{
       var response = await _firebaseFirestore.collection(categoryCollection).add(categoryModel);
       print("Category Added: ${response.id}");
-      Navigator.pop(context);
   }
 
 

@@ -1,11 +1,26 @@
 
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 import 'package:new_admin/common_widget/app_input/app_input.dart';
 import 'package:new_admin/common_widget/app_text/title_text.dart';
+import 'package:new_admin/common_widget/images/app_network_image.dart';
+import 'package:new_admin/controller/firebase_controlle/firebase_image_controller.dart';
+import 'package:new_admin/controller/product_controller/category_controller.dart';
+import 'package:new_admin/controller/product_controller/product_controller.dart';
+import 'package:new_admin/controller/product_controller/product_jsons.dart';
+import 'package:new_admin/model/product/category_model.dart';
+import 'package:new_admin/model/product/product_model.dart';
+import 'package:new_admin/model/product/variants_model.dart';
+import 'package:new_admin/utility/app_const.dart';
 import 'package:new_admin/utility/colors.dart';
 
 
@@ -18,6 +33,8 @@ class AppProducts extends StatefulWidget {
 
 class _AppProductsState extends State<AppProducts> {
 
+  bool _isLoading = false;
+
   final _name = TextEditingController();
   final _shortDescription = TextEditingController();
   final _longDescription = TextEditingController();
@@ -26,16 +43,74 @@ class _AppProductsState extends State<AppProducts> {
   final _wholeSellPrice = TextEditingController();
   final _sellerPrice = TextEditingController();
   final _discountPrice = TextEditingController();
+  final _inStock = TextEditingController();
 
-  List i = [1, 2, 3, 4, 5, 6];
+  CategoryModel? selectCategory;
+  VariantsModel? selectedVariatn;
+  String? _productType;
+  List image = [];
+  List<CategoryModel> getCategoryList = [];
+  List<VariantsModel> getVariantList = [];
+  List<TextEditingController> _variantPrintController = [];
 
-  final List<String> items = [
-    'Item1',
-    'Item2',
-    'Item3',
-    'Item4',
-  ];
-  String? selectedValue;
+  // Function to add a new TextFormField
+  void _addTextField() {
+    _variantPrintController.add(TextEditingController());
+    setState(() {});
+  }
+
+  // Function to remove a TextFormField
+  void _removeTextField(int index) {
+    if (_variantPrintController.length > 1) {
+      _variantPrintController[index].dispose();
+      _variantPrintController.removeAt(index);
+      setState(() {});
+    }
+  }
+
+
+  //get category
+  getCategory(){
+    getCategoryList.clear();
+    FirebaseFirestore.instance.collection(categoryCollection).get().then((value) {
+      for(var i in value.docs!){
+        print("category list ==== ${i.data()}");
+        setState(() {
+          getCategoryList.add(CategoryModel.fromJson(i.data()));
+        });
+      }
+    });
+
+  }
+
+  //get category
+  geetVariatn(){
+    getVariantList.clear();
+    FirebaseFirestore.instance.collection(variantCollection).get().then((value) {
+      for(var i in value.docs!){
+        print("getVariantList list ==== ${i.data()}");
+        setState(() {
+          getVariantList.add(VariantsModel.fromJson(i.data()));
+        });
+      }
+    });
+
+  }
+
+  //store images into list
+  updateCallback(file){
+    setState(() {
+      image.add(file);
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCategory();
+    geetVariatn();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +125,10 @@ class _AppProductsState extends State<AppProducts> {
             TitleText(text: "Add New Product"),
             SizedBox(height: 20,),
             SizedBox(
-              height: size.height,
+              //height: size.height,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   //Gnarel information
                     Expanded(
@@ -108,6 +185,85 @@ class _AppProductsState extends State<AppProducts> {
                             ),
                             SizedBox(height: 5,),
                             AppInputField(controller: _tags, hintText: "Product Tags (Tags, Tags, Tags...) ", maxLine: 1,),
+                            SizedBox(height: 5,),
+                            SizedBox(height: 85,
+                              child: Row(
+                                children: [
+
+                                  Expanded(child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(height: 10,),
+                                      const Text("Product Type",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 13, color: Colors.black
+                                        ),
+                                      ),
+                                      SizedBox(height: 5,),
+                                      DropdownButtonHideUnderline(
+                                        child: DropdownButton2<String>(
+                                          isExpanded: true,
+                                          hint: Text(
+                                            'Select Type',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Theme.of(context).hintColor,
+                                            ),
+                                          ),
+                                          items: ProductJson.productTypeList
+                                              .map((String item) => DropdownMenuItem<String>(
+                                            value: item,
+                                            child: Text(
+                                              item,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ))
+                                              .toList(),
+                                          value: _productType,
+                                          onChanged: (String? value) {
+                                            setState(() {
+                                              _productType = value;
+                                            });
+                                          },
+                                          buttonStyleData:  ButtonStyleData(
+                                              padding: EdgeInsets.symmetric(horizontal: 16),
+                                              height: 40,
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  border: Border.all(width: 1, color: Colors.grey.shade200)
+                                              )
+                                          ),
+                                          menuItemStyleData: const MenuItemStyleData(
+                                            height: 40,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                                  SizedBox(width: 10,),
+                                  Expanded(child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(height: 10,),
+                                      const Text("In Store",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 13, color: Colors.black
+                                        ),
+                                      ),
+                                      SizedBox(height: 5,),
+                                      AppInputField(controller: _inStock, hintText: "1000", maxLine: 1,),
+                                    ],
+                                  )),
+                                ],
+                              ),
+                            ),
                             SizedBox(height: 10,),
                             const Text("Product Images",
                               style: TextStyle(
@@ -126,38 +282,62 @@ class _AppProductsState extends State<AppProducts> {
                               ),
                               child: Row(
                                 children: [
-                                  Container(
-                                    width: 100,
-                                    height: 100,
-                                    margin: EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(width: 1, color: AppColors.mainColor)
-                                    ),
-                                    child: Center(
-                                      child: Icon(Icons.upload_outlined, color: AppColors.mainColor, size: 30,),
+                                  InkWell(
+                                    onTap:()async{
+                                      await FirebaseImageController.startWebFilePicker(updateCallback);
+                                    },
+                                    child: Container(
+                                      width: 100,
+                                      height: 100,
+                                      margin: EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          border: Border.all(width: 1, color: AppColors.mainColor)
+                                      ),
+                                      child: Center(
+                                        child: Icon(Icons.upload_outlined, color: AppColors.mainColor, size: 30,),
+                                      ),
                                     ),
                                   ),
-                                    Expanded(
+                                  image.isNotEmpty?  Expanded(
                                       child: ListView.builder(
-                                        itemCount: i.length,
+                                        itemCount: image.length,
                                         scrollDirection: Axis.horizontal,
                                         itemBuilder: (_, index){
-                                          return Container(
-                                            width: 100,
-                                            height: 100,
-                                            margin: EdgeInsets.all(10),
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(10),
-                                                border: Border.all(width: 1, color: AppColors.mainColor)
-                                            ),
-                                            child: Center(
-                                             // child: //Icon(Icons.upload_outlined, color: AppColors.mainColor, size: 30,),
-                                            ),
+                                          return Stack(
+                                            children: [
+                                              Container(
+                                                width: 100,
+                                                height: 100,
+                                                margin: EdgeInsets.all(10),
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    border: Border.all(width: 1, color: AppColors.mainColor)
+                                                ),
+                                                child: Center(
+                                                  child: Image.memory(image[index])
+                                                ),
+                                              ),
+                                              Positioned(
+                                                right: 15,
+                                                top: 15,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius: BorderRadius.circular(100)
+                                                  ),
+                                                  child: IconButton(onPressed: (){
+                                                    setState(() {
+                                                      image.removeAt(index);
+                                                    });
+                                                  }, icon: Icon(Icons.delete, color: Colors.red,)),
+                                                ),
+                                              )
+                                            ],
                                           );
                                         },
                                       ),
-                                    )
+                                    ) : Center()
                                 ],
                               )
                             )
@@ -306,89 +486,38 @@ class _AppProductsState extends State<AppProducts> {
                                   )
                               ),
                               SizedBox(height: 20,),
-                              DropdownButtonHideUnderline(
-                                child: DropdownButton2<String>(
-                                  isExpanded: true,
-                                  hint: Text(
-                                    'Select Category',
+                              InkWell(
+                                onTap: ()=>selectCategorymethod(),
+                                child: Container(
+                                  width: double.infinity,
+                                  //height: 40,
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    //color: Colors.grey.shade200,
+                                    borderRadius: BorderRadius.circular(5),
+                                    border: Border.all(width: 1, color: Colors.grey.shade200),
+                                  ),
+                                  child: selectCategory != null ?  Text(
+                                    '${selectCategory!.categoryName}',
                                     style: TextStyle(
                                       fontSize: 14,
-                                      color: Theme.of(context).hintColor,
+                                      color: Colors.black,
                                     ),
-                                  ),
-                                  items: items
-                                      .map((String item) => DropdownMenuItem<String>(
-                                    value: item,
-                                    child: Text(
-                                      item,
-                                      style: const TextStyle(
-                                        fontSize: 14,
+                                  ):  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Select Category',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Theme.of(context).hintColor,
+                                        ),
                                       ),
-                                    ),
-                                  ))
-                                      .toList(),
-                                  value: selectedValue,
-                                  onChanged: (String? value) {
-                                    setState(() {
-                                      selectedValue = value;
-                                    });
-                                  },
-                                  buttonStyleData:  ButtonStyleData(
-                                    padding: EdgeInsets.symmetric(horizontal: 16),
-                                    height: 40,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(width: 1, color: Colors.grey.shade200)
-                                    )
-                                  ),
-                                  menuItemStyleData: const MenuItemStyleData(
-                                    height: 40,
+                                      Icon(Icons.arrow_drop_down, color: Colors.grey,)
+                                    ],
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 10,),
-                              DropdownButtonHideUnderline(
-                                child: DropdownButton2<String>(
-                                  isExpanded: true,
-                                  hint: Text(
-                                    'Select Sub Category',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Theme.of(context).hintColor,
-                                    ),
-                                  ),
-                                  items: items
-                                      .map((String item) => DropdownMenuItem<String>(
-                                    value: item,
-                                    child: Text(
-                                      item,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ))
-                                      .toList(),
-                                  value: selectedValue,
-                                  onChanged: (String? value) {
-                                    setState(() {
-                                      selectedValue = value;
-                                    });
-                                  },
-                                  buttonStyleData:  ButtonStyleData(
-                                      padding: EdgeInsets.symmetric(horizontal: 16),
-                                      height: 40,
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
-                                          border: Border.all(width: 1, color: Colors.grey.shade200)
-                                      )
-                                  ),
-                                  menuItemStyleData: const MenuItemStyleData(
-                                    height: 40,
-                                  ),
-                                ),
-                              ),
+                              )
 
                             ],
                           ),
@@ -413,89 +542,67 @@ class _AppProductsState extends State<AppProducts> {
                                   )
                               ),
                               SizedBox(height: 20,),
-                              DropdownButtonHideUnderline(
-                                child: DropdownButton2<String>(
-                                  isExpanded: true,
-                                  hint: Text(
-                                    'Select Variant',
+
+                              InkWell(
+                                onTap: ()=>selectVariantMethod(),
+                                child: Container(
+                                  width: double.infinity,
+                                  //height: 40,
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    //color: Colors.grey.shade200,
+                                    borderRadius: BorderRadius.circular(5),
+                                    border: Border.all(width: 1, color: Colors.grey.shade200),
+                                  ),
+                                  child: selectedVariatn != null ?  Text(
+                                    '${selectedVariatn!.name}',
                                     style: TextStyle(
                                       fontSize: 14,
-                                      color: Theme.of(context).hintColor,
+                                      color: Colors.black,
                                     ),
-                                  ),
-                                  items: items
-                                      .map((String item) => DropdownMenuItem<String>(
-                                    value: item,
-                                    child: Text(
-                                      item,
-                                      style: const TextStyle(
-                                        fontSize: 14,
+                                  ):  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Variants',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Theme.of(context).hintColor,
+                                        ),
                                       ),
-                                    ),
-                                  ))
-                                      .toList(),
-                                  value: selectedValue,
-                                  onChanged: (String? value) {
-                                    setState(() {
-                                      selectedValue = value;
-                                    });
-                                  },
-                                  buttonStyleData:  ButtonStyleData(
-                                      padding: EdgeInsets.symmetric(horizontal: 16),
-                                      height: 40,
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
-                                          border: Border.all(width: 1, color: Colors.grey.shade200)
-                                      )
-                                  ),
-                                  menuItemStyleData: const MenuItemStyleData(
-                                    height: 40,
+                                      Icon(Icons.arrow_drop_down, color: Colors.grey,)
+                                    ],
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 10,),
-                              DropdownButtonHideUnderline(
-                                child: DropdownButton2<String>(
-                                  isExpanded: true,
-                                  hint: Text(
-                                    'Select Sub Category',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Theme.of(context).hintColor,
-                                    ),
-                                  ),
-                                  items: items
-                                      .map((String item) => DropdownMenuItem<String>(
-                                    value: item,
-                                    child: Text(
-                                      item,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ))
-                                      .toList(),
-                                  value: selectedValue,
-                                  onChanged: (String? value) {
-                                    setState(() {
-                                      selectedValue = value;
-                                    });
-                                  },
-                                  buttonStyleData:  ButtonStyleData(
-                                      padding: EdgeInsets.symmetric(horizontal: 16),
-                                      height: 40,
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
-                                          border: Border.all(width: 1, color: Colors.grey.shade200)
-                                      )
-                                  ),
-                                  menuItemStyleData: const MenuItemStyleData(
-                                    height: 40,
-                                  ),
-                                ),
-                              ),
+                              selectedVariatn != null ?  Column(
+                               mainAxisAlignment: MainAxisAlignment.start,
+                               crossAxisAlignment: CrossAxisAlignment.start,
+                               children: [
+                                 SizedBox(height: 20,),
+                                 Text("Selected Variant: ${selectedVariatn!.name}"),
+                                 SizedBox(height: 5,),
+                                 Divider(),
+                                 SizedBox(height: 5,),
+                                 for(var i=0; i<selectedVariatn!.variants!.length; i++)
+                                    Container(
+                                       decoration: BoxDecoration(
+                                         border: Border.all(width: 1, color: Colors.grey.shade200),
+                                       ),
+                                       margin: EdgeInsets.only(bottom: 10),
+                                       width: double.infinity,
+                                        padding: EdgeInsets.all(10),
+                                       child: Row(
+                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                         children: [
+                                           Text("${selectedVariatn!.variants![i]}"),
+                                           SizedBox(width: 100, height: 40, child: AppInputField(controller: _variantPrintController[i], hintText: "\$0.00"))
+
+                                         ],
+                                       ),
+                                   )
+                               ],
+                             ) : Center()
 
                             ],
                           ),
@@ -509,25 +616,170 @@ class _AppProductsState extends State<AppProducts> {
             ),
             SizedBox(height: 30,),
 
-            Container(
-              width: 200,
-              height: 50,
-              decoration: BoxDecoration(
-                color: AppColors.mainColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Center(child: Text("Add Product",
-                style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white
+            InkWell(
+              onTap: ()async{
+                setState(() => _isLoading = true);
+                //add product
+                int id = Random().nextInt(99999);
+                List<String> tagList = _tags.text.split(",");
+
+                //image to string link convert
+                List convertedImage = [];
+                for(var i=0; i<image.length; i++){
+                  convertedImage.add(await FirebaseImageController.uploadImageToFirebaseStorage(image[i], "product_image"));
+                }
+
+                var date = DateTime.now();
+
+                List<ValiantsList> _selectedVariantsList = [];
+
+                for(var i=0; i<selectedVariatn!.variants!.length; i++){
+                  _selectedVariantsList.add(ValiantsList(name: selectedVariatn!.variants![i], prince: _variantPrintController[i].text));
+                }
+
+                var data = ProductModel(
+                  id: id.toString(),
+                  name: _name.text,
+                  productsTags: tagList,
+                  productType: _productType,
+                  discountPrice: _discountPrice.text,
+                  wholePrice: _wholeSellPrice.text,
+                  sellingPrice: _sellerPrice.text,
+                  regularPrice: _regularPrice.text,
+                  images: convertedImage,
+                  shortDescription: _shortDescription.text,
+                  longDescription: _longDescription.text,
+                  isStock: _inStock.text,
+                  createAt: date.toString(),
+                  categoryS: CategoryS.fromJson(selectCategory!.toJson()) ,
+                  variants: Variants(
+                      variants: selectedVariatn!.name.toString(),
+                      valiantsList: _selectedVariantsList
+                  ),
+                  status: "Active"
+                );
+
+                //send to the database
+                await ProductController.addProducts(data, context);
+                setState(() => _isLoading = false);
+
+              },
+              child: Container(
+                width: 200,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: AppColors.mainColor,
+                  borderRadius: BorderRadius.circular(10),
                 ),
-              ),),
+                child: Center(child: _isLoading ? CircularProgressIndicator(color: Colors.white,) : Text("Add Product",
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white
+                  ),
+                ),),
+              ),
             )
 
           ],
         ),
       ),
+    );
+  }
+
+  selectVariantMethod() {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Variant'),
+          content: Container(
+            width: 300,
+            //height: 500,
+            child: ListView.builder(
+              itemCount: getVariantList.length,
+              itemBuilder: (_, index){
+                return Container(
+                  //height: 40,
+                  margin: EdgeInsets.only(bottom: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200
+                  ),
+                  child: ListTile(
+                    onTap: (){
+                      setState(() {
+                        selectedVariatn = getVariantList[index];
+                      });
+                      for(var i =0; i< selectedVariatn!.variants!.length; i++){
+                        _variantPrintController.add(TextEditingController());
+                        print("_variantPrintController === ${_variantPrintController.length}");
+                      }
+                      Navigator.pop(context);
+                    },
+                    title: Text("${getVariantList[index].name}"),
+                  ),
+                );
+              },
+            )
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancle'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  selectCategorymethod() {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Category'),
+          content: Container(
+              width: 300,
+              //height: 500,
+              child: ListView.builder(
+                itemCount: getCategoryList.length,
+                itemBuilder: (_, index){
+                  return Container(
+                    //height: 40,
+                    margin: EdgeInsets.only(bottom: 10),
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade200
+                    ),
+                    child: ListTile(
+                      onTap: (){
+                        setState(() {
+                          selectCategory = getCategoryList[index];
+                        });
+
+                        Navigator.pop(context);
+                      },
+                      leading: AppNetworkImage(src: "${getCategoryList[index].categoryImage}",),
+                      title: Text("${getCategoryList[index].categoryName}"),
+                    ),
+                  );
+                },
+              )
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancle'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

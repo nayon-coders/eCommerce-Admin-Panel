@@ -52,6 +52,8 @@ class _CategoryState extends State<Category> {
         padding: EdgeInsets.all(20),
         child: SingleChildScrollView(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("Category Management",
                 style: TextStyle(
@@ -152,8 +154,9 @@ class _CategoryState extends State<Category> {
                                     }
 
                                   }catch(e){
-
+                                    setState(() => _isLoading = false);
                                   }
+                                  setState(() => _isLoading = false);
                                 }, text: _isEdit ? "Edit" : "Add", isLoading: _isLoading,),
           
                               ],

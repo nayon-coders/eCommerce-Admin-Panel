@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:new_admin/utility/app_const.dart';
 import 'package:new_admin/view/main_page/main_page.dart';
 
 class AuthController {
@@ -19,7 +20,12 @@ class AuthController {
       print('Signed in: ${userCredential.user?.email}');
       // Navigate to a different screen if needed
       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>MainPage()), (route) => false);
-    } catch (e) {
+    } catch ( e) {
+      if(e.toString().contains("invalid-email")){
+        appSnackBar(context: context, text: "Invalid email address");
+      }if(e.toString().contains("invalid-credential")){
+        appSnackBar(context: context, text: "Invalid credential");
+      }
       print('Error signing in: $e');
       // Display an error message
     }

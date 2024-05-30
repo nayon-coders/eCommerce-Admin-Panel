@@ -4,13 +4,14 @@ import '../../utility/colors.dart';
 
 
 class AppTable extends StatelessWidget {
-   AppTable({super.key, required this.headersChildren, required this.row, required this.onSearch, required this.searchController, required this.title});
+   AppTable({super.key, required this.headersChildren, required this.row, required this.onSearch, required this.searchController, required this.title, this.onChanged});
   final List<Widget> headersChildren;
   final Color headerBg = Colors.green.shade100;
   final Widget row;
   final VoidCallback onSearch;
   final TextEditingController searchController;
   final String title;
+  final Function(String)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +36,11 @@ class AppTable extends StatelessWidget {
                   width: 300,
                   height: 40,
                   child: TextFormField(
+                    onChanged: onChanged,
                     controller: searchController,
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.only(left: 15, right: 15),
-                        hintText: "Company Name, Phone Number, Author...",
+                        hintText: "Search...",
                         fillColor: Colors.white,
                         hintStyle: TextStyle(
                             fontSize: 12

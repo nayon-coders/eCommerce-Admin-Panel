@@ -11,7 +11,8 @@ import 'screens/category.dart';
 
 
 class ProductManagement extends StatefulWidget {
-  const ProductManagement({super.key});
+  final int pages;
+  const ProductManagement({super.key, this.pages = 0});
 
   @override
   State<ProductManagement> createState() => _ProductManagementState();
@@ -24,9 +25,10 @@ class _ProductManagementState extends State<ProductManagement> {
     // TODO: implement initState
     super.initState();
     Get.put(FirebaseImageController());
+    _currentWidgets = widget.pages!;
   }
 
-  int _currentWidgets = 0;
+  int? _currentWidgets;
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +77,7 @@ class _ProductManagementState extends State<ProductManagement> {
             child: Container(
               height: size.width,
               color: Colors.grey.shade200,
-              child: ListOfProductManagementMenu.List[_currentWidgets]["page"] as Widget,
+              child: ListOfProductManagementMenu.List[_currentWidgets!]["page"] as Widget,
             ),
           ),
 
@@ -91,8 +93,14 @@ class _ProductManagementState extends State<ProductManagement> {
 
 class ListOfProductManagementMenu{
   static final List = [
-
-
+    {
+      "name" : "All Products",
+      "page" : AllProducts()
+    } ,
+    {
+      "name" : "Add New Product",
+      "page" : AppProducts()
+    } ,
     {
       "name" : "All Category",
       "page" : Category()
@@ -101,14 +109,9 @@ class ListOfProductManagementMenu{
       "name" : "Product Variant",
       "page" : ProductVariant()
     } ,
-    {
-      "name" : "Add New Product",
-      "page" : AppProducts()
-    } ,
-    {
-      "name" : "All Products",
-      "page" : AllProducts()
-    } ,
+
+
+
 
   ];
 }

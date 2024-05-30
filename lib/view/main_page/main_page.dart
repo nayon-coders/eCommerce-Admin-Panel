@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:new_admin/view/dashboards/screens/dashboards.dart';
+import 'package:new_admin/view/order_management/order_main_pages.dart';
+import 'package:new_admin/view/shop_setting/shop_setting.dart';
+import 'package:new_admin/view/user_management/user_management.dart';
 import '../product_management/product_management.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  final int page;
+  final int secondPageIndex;
+
+  const MainPage({super.key,  this.page = 0, this.secondPageIndex = 0});
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -24,6 +30,7 @@ class _MainPageState extends State<MainPage> {
     var size = MediaQuery.of(context).size;
     return DefaultTabController(
       length: 5,
+      initialIndex: widget.page!,
       child: SafeArea(
         child: Container(
           // width: double.infinity,
@@ -91,9 +98,9 @@ class _MainPageState extends State<MainPage> {
                               tabs: [
                                 Tab(child: Text('Dashboard')),
                                 Tab(child: Text('Product Management')),
-                                Tab(child: Text('Event Management')),
-                                Tab(child: Text('Manually Scripting')),
-                                Tab(child: Text('Setting')),
+                                Tab(child: Text('Order Management')),
+                                Tab(child: Text('Customer Management')),
+                                Tab(child: Text('Accounts Setting')),
                               ],
                             ),
                           ),
@@ -102,12 +109,13 @@ class _MainPageState extends State<MainPage> {
                       body: TabBarView(
                         physics: NeverScrollableScrollPhysics(),
                         children: <Widget>[
-
-                          ProductManagement(),
                           Dashboard(),
+                          ProductManagement(pages: widget.secondPageIndex,),
+                          OrderManagement(),
+                          UserManagement(),
+                          //ShopSetting(),
                           Icon(Icons.directions_car, size: 350),
-                          Icon(Icons.directions_car, size: 350),
-                          Icon(Icons.directions_car, size: 350),
+
                         ],
                       ),
                     ),
