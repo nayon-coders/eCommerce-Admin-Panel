@@ -109,12 +109,12 @@ class _MainPageState extends State<MainPage> {
                       body: TabBarView(
                         physics: NeverScrollableScrollPhysics(),
                         children: <Widget>[
+                          OrderManagement(),
                           Dashboard(),
                           ProductManagement(pages: widget.secondPageIndex,),
                           OrderManagement(),
                           UserManagement(),
                           //ShopSetting(),
-                          Icon(Icons.directions_car, size: 350),
 
                         ],
                       ),

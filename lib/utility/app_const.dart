@@ -15,6 +15,16 @@ String bannerCollection = "banners";
 String usersCollection = "users";
 String logoCollection = "app_logo";
 String appSettingCollection = "app_setting";
+String orderCollection = "orders";
+
+
+//order status
+String orderPending = "Pending";
+String orderAccept = "Accept";
+String orderCancel = "Cancel";
+String orderDelivered = "Delivered";
+String orderReady_to_ship = "Ready to ship";
+String orderRejected = "Rejected";
 
 
 Map<String, dynamic> stringToMapConvert(mapString){

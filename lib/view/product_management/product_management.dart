@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:new_admin/controller/firebase_controlle/firebase_image_controller.dart';
@@ -74,6 +75,7 @@ class _ProductManagementState extends State<ProductManagement> {
 
 
           Expanded(
+            flex: 1,
             child: Container(
               height: size.width,
               color: Colors.grey.shade200,

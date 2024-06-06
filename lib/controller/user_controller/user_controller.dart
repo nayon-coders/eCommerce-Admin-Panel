@@ -12,6 +12,12 @@ class UserController{
     return _firestore.collection(usersCollection).snapshots();
   }
 
+  //get user list
+  static Stream<QuerySnapshot<Map<String, dynamic>>>  getSingleUser(email){
+    return _firestore.collection(usersCollection).where("email", isEqualTo: email).snapshots();
+  }
+
+
 
   //update user
   static Future updateUserStatus(String id, BuildContext context, String status)async{
