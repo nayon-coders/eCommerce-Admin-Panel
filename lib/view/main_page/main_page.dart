@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:new_admin/controller/auth_controller/auth_controller.dart';
+import 'package:new_admin/utility/app_const.dart';
 import 'package:new_admin/view/dashboards/screens/dashboards.dart';
 import 'package:new_admin/view/order_management/order_main_pages.dart';
 import 'package:new_admin/view/shop_setting/shop_setting.dart';
@@ -58,19 +60,27 @@ class _MainPageState extends State<MainPage> {
                         //   ),
                         //   child: Center(child: Text("+ Add Ne Product"),),
                         // ),
-                        Container(
-                          margin: EdgeInsets.only(top: 10, bottom: 10, right: 40),
-                          padding: EdgeInsets.only(left: 20, right: 20, top: 8, bottom: 8),
-                          decoration: BoxDecoration(
-                            color: Colors.amber,
-                            borderRadius: BorderRadius.circular(100),
+                        InkWell(
+                          onTap: (){
+                            appAlertDialog(context: context, child: Text("Are you sure? Do you want to logout?"), onClick: (){
+                              AuthController.logout(context);
+                            });
+
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(top: 10, bottom: 10, right: 40),
+                            padding: EdgeInsets.only(left: 20, right: 20, top: 8, bottom: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.amber,
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            child: Center(child: Text("Logout",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white
+                                )
+                            ),),
                           ),
-                          child: Center(child: Text("Logout",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white
-                              )
-                          ),),
                         )
                       ],
                     )
@@ -109,12 +119,12 @@ class _MainPageState extends State<MainPage> {
                       body: TabBarView(
                         physics: NeverScrollableScrollPhysics(),
                         children: <Widget>[
-                          OrderManagement(),
+
                           Dashboard(),
                           ProductManagement(pages: widget.secondPageIndex,),
                           OrderManagement(),
                           UserManagement(),
-                          //ShopSetting(),
+                          ShopSetting(),
 
                         ],
                       ),

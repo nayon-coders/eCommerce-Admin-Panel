@@ -14,6 +14,7 @@ class UserController{
 
   //get user list
   static Stream<QuerySnapshot<Map<String, dynamic>>>  getSingleUser(email){
+    print("email -- $email");
     return _firestore.collection(usersCollection).where("email", isEqualTo: email).snapshots();
   }
 

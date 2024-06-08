@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:new_admin/utility/app_const.dart';
+import 'package:new_admin/view/auth/auth.dart';
 import 'package:new_admin/view/main_page/main_page.dart';
 
 class AuthController {
@@ -30,4 +31,14 @@ class AuthController {
       // Display an error message
     }
   }
+
+  static logout(context){
+    try{
+      _auth.signOut();
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>Authentication()), (route) => false);
+    }catch(e){
+      print("logout --- ${e}");
+    }
+  }
+
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_admin_scaffold/admin_scaffold.dart';
+import 'package:new_admin/common_widget/app_text/title_text.dart';
 import 'package:new_admin/utility/assets.dart';
+import 'package:new_admin/view/dashboards/screens/total_orders.dart';
 import 'package:new_admin/view/product_management/screens/add_products.dart';
 
 import '../../../utility/colors.dart';
@@ -28,7 +30,9 @@ class _DashboardState extends State<Dashboard> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 50,),
+            SizedBox(height: 25,),
+            TitleText(text: "Order Summary"),
+            TotalOrderInDashbaord(),
 
 
           ],

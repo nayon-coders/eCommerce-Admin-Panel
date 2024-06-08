@@ -7,14 +7,14 @@ import '../../../controller/order_controller/order_controller.dart';
 import '../../../model/orders_model/order_model.dart';
 import '../../../utility/app_const.dart';
 
-class DeliveredOrders extends StatefulWidget {
-  const DeliveredOrders({super.key});
+class ReadyToShip extends StatefulWidget {
+  const ReadyToShip({super.key});
 
   @override
-  State<DeliveredOrders> createState() => _DeliveredOrdersState();
+  State<ReadyToShip> createState() => _ReadyToShipState();
 }
 
-class _DeliveredOrdersState extends State<DeliveredOrders> {
+class _ReadyToShipState extends State<ReadyToShip> {
   final searchController = TextEditingController();
 
   GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
@@ -58,7 +58,7 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
           height: MediaQuery.of(context).size.height,
           child: Column(
             children: [
-              Text("Deliverd Details",
+              Text("Order Details",
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 20,
@@ -74,7 +74,7 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
         child:
         AppTable(
           isSearchShow: false,
-          title: "Delivered Order's",
+          title: "Ready to ship Order's",
           headersChildren: const [
             AppTableHeader(width: 60, text: "Order ID"),
             AppTableHeader(width: 200, text: "Payment Method"),
@@ -85,7 +85,7 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
           ],
           row:Expanded(
             child: StreamBuilder(
-                stream: OrderController.getDeliveredOrder(),
+                stream: OrderController.getReadyToShipOrder(),
                 builder: (context, snapshot) {
 
                   if(snapshot.connectionState == ConnectionState.waiting){

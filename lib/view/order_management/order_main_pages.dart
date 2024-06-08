@@ -8,6 +8,7 @@ import 'package:new_admin/view/order_management/screens/allOrders.dart';
 import 'package:new_admin/view/order_management/screens/canceled_orders.dart';
 import 'package:new_admin/view/order_management/screens/delivered_orders.dart';
 import 'package:new_admin/view/order_management/screens/pending_orders.dart';
+import 'package:new_admin/view/order_management/screens/ready_ship.dart';
 import 'package:new_admin/view/order_management/screens/rejected_orders.dart';
 import 'package:new_admin/view/product_management/screens/product_list.dart';
 import 'package:new_admin/view/product_management/screens/product_variants.dart';
@@ -105,6 +106,10 @@ class ListOfProductManagementMenu{
     {
       "name" : "Accepted Order",
       "page" : AcceptedOrders()
+    } ,
+    {
+      "name" : "Ready to ship",
+      "page" : ReadyToShip()
     } ,
 
     {

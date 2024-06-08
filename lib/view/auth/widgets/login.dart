@@ -75,14 +75,14 @@ class _LoginWidgetsState extends State<LoginWidgets> {
                 SizedBox(
                   height: 8,
                 ),
-                Text(
-                  "Forget password?",
-                  style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.italic,
-                      color: AppColors.mainColor),
-                ),
+                // Text(
+                //   "Forget password?",
+                //   style: TextStyle(6565
+                //       fontSize: 13,
+                //       fontWeight: FontWeight.w400,
+                //       fontStyle: FontStyle.italic,
+                //       color: AppColors.mainColor),
+                // ),
                 SizedBox(
                   height: 20,
                 ),

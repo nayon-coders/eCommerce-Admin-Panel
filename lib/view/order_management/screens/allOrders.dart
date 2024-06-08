@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:new_admin/common_widget/app_text/title_text.dart';
 import 'package:new_admin/common_widget/table_widgets/table.dart';
 import 'package:new_admin/common_widget/table_widgets/table_row_colloumn.dart';
@@ -11,6 +12,7 @@ import 'package:new_admin/utility/app_const.dart';
 import 'package:new_admin/view/order_management/screens/view_orders.dart';
 import 'package:new_admin/view/product_management/product_management.dart';
 import 'package:new_admin/view/product_management/screens/edit_product.dart';
+import 'package:number_pagination/number_pagination.dart';
 
 import '../../main_page/main_page.dart';
 
@@ -22,6 +24,7 @@ class AllOrders extends StatefulWidget {
 }
 
 class _AllOrdersState extends State<AllOrders> {
+
   final searchController = TextEditingController();
 
   GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
@@ -35,6 +38,16 @@ class _AllOrdersState extends State<AllOrders> {
   var  _searchValue;
 
   bool _isDetails = false;
+
+  int selectedPageNumber = 1;
+  List<Widget> pages = [Container()];
+  int currentPages = 0;
+
+  int _startIndex = 0;
+  int _endIndex = 2;
+  List totalItems = [];
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -67,160 +80,124 @@ class _AllOrdersState extends State<AllOrders> {
       ),
       body: Container(
         padding: EdgeInsets.all(20),
-        child:  AppTable(
+        height: MediaQuery.of(context).size.height-100,
+        child:
+        AppTable(
+          isSearchShow: false,
           title: "All Order's",
           headersChildren: const [
             AppTableHeader(width: 60, text: "Order ID"),
             AppTableHeader(width: 200, text: "Payment Method"),
             AppTableHeader(width: 300, text: "Delivery Address"),
             AppTableHeader(width: 120, text: "Status"),
-            AppTableHeader(width: 80, text: "Date"),
+            AppTableHeader(width: 140, text: "Date"),
             AppTableHeader(width: 50, text: "Action"),
           ],
-          row: Expanded(
+          row:Expanded(
             child: StreamBuilder(
                 stream: OrderController.getAllOrder(),
                 builder: (context, snapshot) {
-      
-      
+
                   if(snapshot.connectionState == ConnectionState.waiting){
                     return Center(child: CircularProgressIndicator(),);
                   }
-                  // List<OrderModel> searchData = [];
-                  // for(var i in snapshot.data!.docs){
-                  //   if(_searchValue.toString().toLowerCase().contains(OrderModel.fromJson(i.data()).name!.toLowerCase())){
-                  //     searchData.add(OrderModel.fromJson(i!.data()));
-                  //   }
-                  // }
-                  // return searchData.isNotEmpty ?
-                  // ListView.builder(
-                  //   itemCount: searchData.length,
-                  //   itemBuilder: (_, index){
-                  //     var data = searchData[index];
-                  //     return  Container(
-                  //       width: double.infinity,
-                  //       height: 50,
-                  //       padding: EdgeInsets.only(left: 20, right: 20),
-                  //       decoration: BoxDecoration(
-                  //           color: index.isEven ? Colors.white : Colors.grey.shade200
-                  //       ),
-                  //       child: Row(
-                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //         children: [
-                  //           AppTableRow(width: 30, text: "${data.id}",),
-                  //           AppTableRow(width: 200, text: "${data.name}"),
-                  //
-                  //           AppTableRow(width: 60, text: "\$${data.sellingPrice}"),
-                  //           AppTableRow(width: 100, text: "COD"),
-                  //           AppTableRow(width: 50, text: "${data.status}"),
-                  //           AppTableRow(width: 80, text: "${data.createAt}"),
-                  //           Row(
-                  //             children: [
-                  //
-                  //               AppTableRow(width: 40, clickChild: IconButton(
-                  //                 onPressed: (){
-                  //                   setState(() {
-                  //                     _isView = true;
-                  //                     _selectedProductModel = data;
-                  //                     docId = snapshot.data!.docs[index]!.id.toString();
-                  //                   });
-                  //
-                  //                 },
-                  //                 icon: Icon(Icons.remove_red_eye, color: Colors.green,),
-                  //               ), isClick: true, onTap: (){}, text: '', ),
-                  //               SizedBox(width: 10,),
-                  //
-                  //             ],
-                  //           ),
-                  //
-                  //         ],
-                  //       ),
-                  //     );
-                  //   },)
-                      //:
-                  return snapshot.data!.docs.isNotEmpty ? ListView.builder(
-      
-                    itemCount: snapshot.data!.docs!.length,
-                    itemBuilder: (_, index){
-                      var data = OrderModel.fromJson(snapshot.data!.docs[index]!.data());
-                      return  Container(
-                        width: double.infinity,
-                        height: 50,
-                        padding: EdgeInsets.only(left: 20, right: 20),
-                        decoration: BoxDecoration(
-                            color: index.isEven ? Colors.white : Colors.grey.shade200
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            AppTableRow(width: 60, text: "${data.id}",),
-                            AppTableRow(width: 200, text: "${data.paymentMethod}"),
-                            AppTableRow(width: 300, text: "${data.deliveryAddress}"),
-                            AppTableRow(width: 120, clickChild: Container(
-                              width: 120,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                color: data.status == orderPending
-                                    ? Colors.blue.shade200
-                                    : data.status == orderCancel
-                                    ? Colors.red.shade200
-                                    : data.status == orderRejected
-                                    ? Colors.red.shade200
-                                    : data.status == orderReady_to_ship
-                                    ? Colors.deepPurple.shade200
-                                    : data.status == orderAccept
-                                    ? Colors.greenAccent :
-                                     Colors.green.shade200,
-                                borderRadius: BorderRadius.circular(10)
-                              ),
-                              child: Center(
-                                child: Text("${data.status}"),
-                              ),
-                            ), isClick: true, onTap: (){}, text: '', ),
-                            AppTableRow(width: 60, text: "${data.date}"),
-                            Row(
-                              children: [
-      
-                                AppTableRow(width: 80, clickChild: IconButton(
-                                  onPressed: (){
-                                    setState(() {
-                                      _selectedOrderModel = data;
-                                      docId = snapshot.data!.docs[index].id.toString();
-                                      _isDetails = true;
-                                    });
 
-                                  },
-                                  icon: Icon(Icons.remove_red_eye, color: Colors.green,),
-                                ), isClick: true, onTap: (){}, text: '', ),
-      
-                              ],
-                            ),
-      
-                          ],
-                        ),
-                      );
-                    },) : Center(child: Text("Empty"),);
+                  return SizedBox(
+
+                    height: MediaQuery.of(context).size.height-200,
+                    width: MediaQuery.of(context).size.width-200,
+                    child: snapshot.data!.docs.isNotEmpty ? ListView.builder(
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (_, index) {
+                        totalItems.add(index);
+                        var data = OrderModel.fromJson(snapshot.data!.docs[index]!.data());
+                        return Container(
+                          width: double.infinity,
+                          height: 50,
+                          padding: EdgeInsets.only(left: 20, right: 20),
+                          decoration: BoxDecoration(
+                            color: index.isEven ? Colors.white : Colors.grey.shade200,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              AppTableRow(width: 60, text: "${data.id}"),
+                              AppTableRow(width: 200, text: "${data.paymentMethod}"),
+                              AppTableRow(width: 300, text: "${data.deliveryAddress}"),
+                              AppTableRow(
+                                width: 120,
+                                clickChild: Container(
+                                  width: 120,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    color: data.status == orderPending
+                                        ? Colors.blue.shade200
+                                        : data.status == orderCancel
+                                        ? Colors.red.shade200
+                                        : data.status == orderRejected
+                                        ? Colors.red.shade200
+                                        : data.status == orderReady_to_ship
+                                        ? Colors.deepPurple.shade200
+                                        : data.status == orderAccept
+                                        ? Colors.greenAccent
+                                        : Colors.green.shade200,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Center(
+                                    child: Text("${data.status}"),
+                                  ),
+                                ),
+                                isClick: true,
+                                onTap: () {},
+                                text: '',
+                              ),
+                              AppTableRow(width: 140, text: "${data.date}"),
+                              Row(
+                                children: [
+                                  AppTableRow(
+                                    width: 80,
+                                    clickChild: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _selectedOrderModel = data;
+                                          docId = snapshot.data!.docs[index].id.toString();
+                                          _isDetails = true;
+                                        });
+                                      },
+                                      icon: Icon(
+                                        Icons.remove_red_eye,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                    isClick: true,
+                                    onTap: () {},
+                                    text: '',
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ) : Center(child: Text("Empty"),),
+                  );
+
                 }
             ),
-          ),
+          ) ,
+
           onChanged: (v){
             setState(() {
               _searchValue = v;
+              print(" _searchValue === ${_searchValue}");
             });
           },
           searchController: searchController, onSearch: () {  },
         ),
       ),
-    );
-  }
 
 
 
-
-  Widget _orderDetails({required OrderModel orderModel}){
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
     );
   }
 

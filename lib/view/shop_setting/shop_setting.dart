@@ -5,7 +5,10 @@ import 'package:new_admin/controller/firebase_controlle/firebase_image_controlle
 import 'package:new_admin/utility/colors.dart';
 import 'package:new_admin/view/product_management/screens/product_list.dart';
 import 'package:new_admin/view/product_management/screens/product_variants.dart';
+import 'package:new_admin/view/shop_setting/screens/about_us.dart';
 import 'package:new_admin/view/shop_setting/screens/banner_logo.dart';
+import 'package:new_admin/view/shop_setting/screens/change_password.dart';
+import 'package:new_admin/view/shop_setting/screens/privacy.dart';
 import '../../common_widget/menu_widgets/side_menus.dart';
 
 
@@ -98,15 +101,15 @@ class ListOfProductManagementMenu{
     } ,
     {
       "name" : "About Us",
-      "page" : AllProducts()
+      "page" : AboutUs()
     } ,
     {
       "name" : "Terms & Policy",
-      "page" : AllProducts()
+      "page" : PrivacyPolicay()
     } ,
     {
-      "name" : "Contact Info",
-      "page" : AllProducts()
+      "name" : "Change Password",
+      "page" : ChangePassword()
     },
   ];
 }

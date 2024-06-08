@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  auto_size_text:
+    dependency: transitive
+    description:
+      name: auto_size_text
+      sha256: "3f5261cd3fb5f2a9ab4e2fc3fba84fd9fcaac8821f20a1d4e71f557521b22599"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -552,6 +560,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.20.0"
+  number_pagination:
+    dependency: "direct main"
+    description:
+      name: number_pagination
+      sha256: be0d775437ef14cab1686232051e9ec481330a4eb6d529e99969259df5cab1cc
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.6"
+  number_paginator:
+    dependency: "direct main"
+    description:
+      name: number_paginator
+      sha256: "342992c0d87b1f0d7434e37b25b514effb075c89db3539ac6ec498f9d4d5f61e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.1"
   octo_image:
     dependency: transitive
     description:
@@ -648,6 +672,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.27.7"
+  shimmer:
+    dependency: "direct main"
+    description:
+      name: shimmer
+      sha256: "5f88c883a22e9f9f299e5ba0e4f7e6054857224976a5d9f839d4ebdc94a14ac9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -717,6 +749,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  syncfusion_flutter_charts:
+    dependency: "direct main"
+    description:
+      name: syncfusion_flutter_charts
+      sha256: "8c57d2695b12babe4b5b33d896b03042239a08e6c14f44b185760a7462ad84dc"
+      url: "https://pub.dev"
+    source: hosted
+    version: "25.2.7"
+  syncfusion_flutter_core:
+    dependency: transitive
+    description:
+      name: syncfusion_flutter_core
+      sha256: e17dcc7a1d0701e84d0a83c0040503cdcc6c72e44db0d733ab4c706dd5b8b9f8
+      url: "https://pub.dev"
+    source: hosted
+    version: "25.2.7"
   synchronized:
     dependency: transitive
     description:

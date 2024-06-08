@@ -4,7 +4,7 @@ import '../../utility/colors.dart';
 
 
 class AppTable extends StatelessWidget {
-   AppTable({super.key, required this.headersChildren, required this.row, required this.onSearch, required this.searchController, required this.title, this.onChanged});
+   AppTable({super.key, required this.headersChildren, required this.row, required this.onSearch, required this.searchController, required this.title, this.onChanged, this.isSearchShow = true});
   final List<Widget> headersChildren;
   final Color headerBg = Colors.green.shade100;
   final Widget row;
@@ -12,6 +12,7 @@ class AppTable extends StatelessWidget {
   final TextEditingController searchController;
   final String title;
   final Function(String)? onChanged;
+  final bool isSearchShow;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class AppTable extends StatelessWidget {
               ),
             ),
 
-            Row(
+            isSearchShow ?  Row(
 
               children: [
                 SizedBox(
@@ -77,7 +78,7 @@ class AppTable extends StatelessWidget {
                   ),
                 )
               ],
-            )
+            ) : Center()
           ],
         ),
         SizedBox(height: 10,),

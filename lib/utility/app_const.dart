@@ -14,7 +14,7 @@ String variantCollection = "variants";
 String bannerCollection = "banners";
 String usersCollection = "users";
 String logoCollection = "app_logo";
-String appSettingCollection = "app_setting";
+String appSettingCollection = "settings";
 String orderCollection = "orders";
 
 
