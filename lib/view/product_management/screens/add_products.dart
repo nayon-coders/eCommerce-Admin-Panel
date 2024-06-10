@@ -42,6 +42,7 @@ class _AppProductsState extends State<AppProducts> {
   final _regularPrice = TextEditingController();
   final _wholeSellPrice = TextEditingController();
   final _sellerPrice = TextEditingController();
+  final _perchasePrice = TextEditingController();
   final _discountPrice = TextEditingController();
   final _inStock = TextEditingController();
 
@@ -380,45 +381,80 @@ class _AppProductsState extends State<AppProducts> {
                                   )
                               ),
                               SizedBox(height: 20,),
+                              SizedBox(
+                                width: 230,
+                                height: 75,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text("Purchase price per KG/Unit",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 13, color: Colors.black
+                                      ),
+                                    ),
+                                    SizedBox(height: 5,),
+                                    AppInputField(
+                                      onChanged: (v){
+                                        setState(() {
+                                          if(v.isNotEmpty){
+                                            _sellerPrice.text = (double.parse("$v") /100 * 25 + double.parse("$v")).toString();
+                                            _wholeSellPrice.text = (double.parse("$v") /100 * 15 + double.parse("$v")).toString();
+                                            _regularPrice.text = (double.parse("$v") /100 * 42 + double.parse("$v")).toString();
+                                          }
+                                        });
+                                        setState(() {
+
+                                        });
+                                      },
+
+                                      controller: _perchasePrice, hintText: "Purchase price per KG/Unit",),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 20,),
                               Row(
                                 children: [
                                   SizedBox(
-                                    height: 75,
                                     width: 230,
+                                    height: 75,
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("Product Price",
+                                        Text("Retailers Price (+ %25)",
                                           style: TextStyle(
                                               fontWeight: FontWeight.w400,
                                               fontSize: 13, color: Colors.black
                                           ),
                                         ),
                                         SizedBox(height: 5,),
-                                        AppInputField(controller: _regularPrice, hintText: "Product prince"),
+                                        AppInputField(controller: _sellerPrice, hintText: "Retailers price", readOnly: true,),
                                       ],
                                     ),
                                   ),
                                   SizedBox(width: 10,),
                                   SizedBox(
-                                    width: 230,
                                     height: 75,
+                                    width: 230,
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("Seller Price",
+                                        Text("Restaurants Price (+ %42)",
                                           style: TextStyle(
                                               fontWeight: FontWeight.w400,
                                               fontSize: 13, color: Colors.black
                                           ),
                                         ),
                                         SizedBox(height: 5,),
-                                        AppInputField(controller: _sellerPrice, hintText: "Seller prince"),
+                                        AppInputField(controller: _regularPrice, hintText: "Restaurants price", readOnly:  true,),
                                       ],
                                     ),
                                   ),
+
+
                                 ],
                               ),
                               SizedBox(height: 10,),
@@ -431,14 +467,14 @@ class _AppProductsState extends State<AppProducts> {
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("Whole Price",
+                                        Text("Whole Price (+ %15)",
                                           style: TextStyle(
                                               fontWeight: FontWeight.w400,
                                               fontSize: 13, color: Colors.black
                                           ),
                                         ),
                                         SizedBox(height: 5,),
-                                        AppInputField(controller: _wholeSellPrice, hintText: "Whole prince"),
+                                        AppInputField(controller: _wholeSellPrice, hintText: "Whole price", readOnly:  true,),
                                       ],
                                     ),
                                   ),

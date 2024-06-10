@@ -59,7 +59,7 @@ class _AuthenticationState extends State<Authentication> {
                       ),
                     ),
                     SizedBox(height: 8,),
-                    Text("Tech Tonic Solucations BD",
+                    Text("Commandespros",
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 25,
@@ -67,16 +67,6 @@ class _AuthenticationState extends State<Authentication> {
                       ),
                     ),
                     SizedBox(height: 10,),
-                    SizedBox(
-                      width: 200,
-                      child: Text("We are here to help you to increase your business 80%",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),

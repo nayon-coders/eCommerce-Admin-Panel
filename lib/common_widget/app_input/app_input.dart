@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 
 class AppInputField extends StatelessWidget {
-  const AppInputField({super.key, required this.controller, required this.hintText, this.maxLine,this.keyboardType,  this.type, this.onTab, this.focusNode, this.validator});
+  const AppInputField({super.key, required this.controller, required this.hintText, this.maxLine,this.keyboardType,  this.type, this.onTab, this.focusNode, this.validator, this.readOnly = false, this.onChanged});
 
   final TextEditingController controller;
   final String hintText;
@@ -12,6 +12,8 @@ class AppInputField extends StatelessWidget {
   final VoidCallback? onTab;
   final FocusNode? focusNode;
   final String Function(String?)? validator;
+  final bool readOnly;
+  final Function(String)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +21,7 @@ class AppInputField extends StatelessWidget {
       onTap: onTab,
       focusNode: focusNode,
       maxLines: maxLine,
+      onChanged: onChanged,
       keyboardType: keyboardType,
       keyboardAppearance: Brightness.light,
       controller: controller,
@@ -26,6 +29,7 @@ class AppInputField extends StatelessWidget {
         fontSize: 13,
         fontWeight: FontWeight.w400,
       ),
+      readOnly:  readOnly,
       decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
